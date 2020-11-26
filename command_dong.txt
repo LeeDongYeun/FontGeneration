@@ -1,0 +1,17 @@
+1)Dumping dataset
+
+python -m scripts.prepare_user_dataset kor $FILEDIR meta/kor_custom.json $DUMPDIR
+
+$FILEDIR는 사람별 폰트가 담긴 폴더들이 있는 directory입니다
+ex) D:\koreanFont\handwriting_syllable_per_person 디렉토리에 man_24_undergraduate, man_25_undergraduate 등
+사람별 손글씨 폴더가 있습니다. 이때 $FILEDIR에 D:\koreanFont\handwriting_syllable_per_person 넣어야 합니다.
+
+원하는 데이터를 사용하기 위해 meta/kor_custom.json를 수정해서 사용합니다.
+
+2)evaluation
+yaml 파일은 딱히 고칠거 없고 data_meta: meta/kor_split_whie.json 사용해주시면 됩니다.
+
+evaluator.py 467줄 보시면 meta = json.load(open('meta/kor_custom-unrefined.json')) 이렇게 있습니다.
+여기에 명시된 json파일을 이용하여 custom 데이터 evaluation을 진행합니다.
+
+python evaluator.py try1 checkpoints/korean-handwriting.pth ./test_results  cfgs/kor_ANSI_encoding.yaml --mode user-study-save
