@@ -1,5 +1,5 @@
 ```
 poetry install
 poetry shell
-python ./run.sh 1.jpg
+python ./run.py 1.jpg
 ```
