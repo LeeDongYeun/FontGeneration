@@ -1,6 +1,14 @@
 # train
-data_dir: data
-data_meta: meta/kor_split_whie.json
+data_dir: data/processed/ocr_results/sample2
+# data_dir: data/processed/aihub
+#data_dir: data
+data_meta: meta/kor_custom_ocr.json
+target_json: meta/ocr_sample2_new.json
+
+# data_meta: meta/kor_custom.json
+# target_json: meta/kor_custom-unrefined.json
+#data_meta: meta/kor_custom_ocr.json
+#data_meta: meta/kor_custom.json
 language: kor
 batch_size: 12
 max_iter: 200000

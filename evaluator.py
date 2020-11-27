@@ -278,7 +278,21 @@ class Evaluator:
                     uni = "".join([f'{ord(each):04X}' for each in char])
                     path = save_dir / font_name / "{}_{}.png".format(font_name, uni)
                     path.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    ##############################
+                    # added by whie
+ 
+                    #j ref original chars
+                    refs = self.get_charimages(fonts, char)
+                    grid = utils.make_comparable_grid(refs, glyph.unsqueeze(0), nrow=2)
+
+                    path_compare = save_dir / font_name / "{}_{}_compare.png".format(font_name, uni)
+                    utils.save_tensor_to_image(grid, path_compare)
+                    
+                    ##############################
                     utils.save_tensor_to_image(glyph, path)
+                
+                
 
         if save_dir:  # do not write grid
             return
@@ -464,7 +478,8 @@ def eval_ckpt():
         dic = evaluator.validation(gen, step)
         logger.info("Validation is done. Result images are saved to {}".format(args.img_dir))
     elif args.mode.startswith('user-study'):
-        meta = json.load(open('meta/kor_custom-unrefined.json'))
+        meta = json.load(open(cfg['target_json']))
+        #meta = json.load(open('meta/kor_custom-unrefined.json'))
         target_chars = meta['target_chars']
         style_chars = meta['style_chars']
         fonts = meta['fonts']

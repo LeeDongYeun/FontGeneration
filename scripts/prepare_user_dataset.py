@@ -63,6 +63,107 @@ class UserFontProcessor(object):
             return ord(char)
         else:
             raise ValueError(self.language)
+   
+    def get_fontsize(self, npimg):
+        w, h = npimg.shape
+        wsum = npimg.sum(0)
+        hsum = npimg.sum(1)
+
+        npimg = 255 - npimg
+        
+        # # Binary Thresholding.
+        threshold = 255 * 2
+
+        if not npimg.sum():
+            self.logger.warning(
+                '{}, "{}" ({}) is empty (no black)'.format(font, char, self.ord(char))
+            )
+            return False
+        wmin = np.arange(w)[wsum>threshold].min()
+        wmax = np.arange(w)[wsum>threshold].max()
+        hmin = np.arange(h)[hsum>threshold].min()
+        hmax = np.arange(h)[hsum>threshold].max()
+
+        return max(wmax-wmin, hmax-hmin)
+
+
+    def center_align(self, npimg, fontmaxsize, size=128, margin=0):
+
+        w, h = npimg.shape
+        wsum = npimg.sum(0)
+        hsum = npimg.sum(1)
+
+        npimg = 255 - npimg
+        
+        # # Binary Thresholding.
+        threshold = 255 * 2
+
+        if not npimg.sum():
+            self.logger.warning(
+                '{}, "{}" ({}) is empty (no black)'.format(font, char, self.ord(char))
+            )
+            return False
+        wmin = np.arange(w)[wsum>threshold].min()
+        wmax = np.arange(w)[wsum>threshold].max()
+        hmin = np.arange(h)[hsum>threshold].min()
+        hmax = np.arange(h)[hsum>threshold].max()
+
+        npimg = 255 - npimg[hmin:hmax+1, wmin:wmax+1]
+        canvas_size = int(fontmaxsize*(1+margin))
+
+        roi_w = wmax-wmin
+        roi_h = hmax-hmin
+
+        left_margin = (canvas_size - roi_w)//2
+        right_margin = canvas_size - roi_w - left_margin
+        top_margin = (canvas_size - roi_h)//2
+        bottom_margin = canvas_size - roi_h - top_margin
+
+        npimg = np.pad(npimg, ((top_margin, bottom_margin), (left_margin, right_margin)),
+                       'constant', constant_values=255)
+        img = Image.fromarray(npimg).resize((size, size), resample=self.resize_method)
+
+        return img 
+
+    def render_center_no_offset(self, char, font, fontmaxsize, size=128, margin=0):
+        char = self.fix_char_order_if_thai(char)
+        size_x, size_y = font.getsize(char)
+        offset_x, offset_y = font.getoffset(char)
+        roi_w = size_x-offset_x
+        roi_h = size_y-offset_y
+        img = Image.new('L', (roi_w, roi_h), 255)
+        draw = ImageDraw.Draw(img)
+        draw.text((-offset_x, -offset_y), char, font=font)
+
+        if img.size[0] == 0 or img.size[1] == 0:
+            self.logger.warning(
+                '{}, "{}" ({}) is empty (size=0)'.format(font, char, self.ord(char))
+            )
+            return False
+
+        npimg = 255 - np.array(img)
+        if not npimg.sum():
+            self.logger.warning(
+                '{}, "{}" ({}) is empty (no black)'.format(font, char, self.ord(char))
+            )
+            return False
+        wmin = npimg.sum(0).nonzero()[0].min()
+        wmax = npimg.sum(0).nonzero()[0].max()
+        hmin = npimg.sum(1).nonzero()[0].min()
+        hmax = npimg.sum(1).nonzero()[0].max()
+
+        npimg = 255 - npimg[hmin:hmax+1, wmin:wmax+1]
+        canvas_size = int(fontmaxsize*(1+margin))
+
+        left_margin = (canvas_size - roi_w)//2
+        right_margin = canvas_size - roi_w - left_margin
+        top_margin = (canvas_size - roi_h)//2
+        bottom_margin = canvas_size - roi_h - top_margin
+
+        npimg = np.pad(npimg, ((top_margin, bottom_margin), (left_margin, right_margin)),
+                       'constant', constant_values=255)
+        img = Image.fromarray(npimg).resize((size, size), resample=self.resize_method)
+
         
     def dump_fonts(self, fonts, dump_dir, compression=None):
 
@@ -87,10 +188,24 @@ class UserFontProcessor(object):
             
             images = []
             chars = []
+
+ 
+            # get max font size
+            fontmaxsize = 0
             for f in targetfonts:
                 img = Image.open(f)
                 npimg = np.array(ImageOps.grayscale(img))
-                img = Image.fromarray(npimg).resize((128, 128), resample=self.resize_method)
+                
+                maxsize = self.get_fontsize(npimg)
+                fontmaxsize = max(fontmaxsize, maxsize)
+
+            for f in targetfonts:
+                img = Image.open(f)
+                npimg = np.array(ImageOps.grayscale(img))
+                # img = Image.fromarray(npimg)
+
+                img = self.center_align(npimg, fontmaxsize, size=128, margin=0.4)
+                # img = Image.fromarray(npimg).resize((128, 128), resample=self.resize_method)
 
                 if not img:
                     continue
