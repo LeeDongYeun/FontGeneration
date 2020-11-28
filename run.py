@@ -5,7 +5,7 @@ from pathlib import Path
 
 adjust_size = 500
 rho_threshold = 10
-theta_threshold = 35*np.pi/180
+theta_threshold = 30*np.pi/180
 group_threshold = 15*np.pi/180
 missing_threshold = 1.2
 
@@ -51,8 +51,8 @@ for i in range(len(lines)):
     for j in range(len(lines)):
         if i == j:
             continue
-        rho_i,theta_i = lines[i][0]
-        rho_j,theta_j = lines[j][0]
+        rho_i, theta_i = lines[i][0]
+        rho_j, theta_j = lines[j][0]
         if dist_diff(rho_i, rho_j) < rho_threshold and angle_diff(theta_i, theta_j) < theta_threshold:
             similar_lines[i].append(j)
 
@@ -72,7 +72,7 @@ for i in range(len(lines) - 1):
 
         rho_i,theta_i = lines[indices[i]][0]
         rho_j,theta_j = lines[indices[j]][0]
-        if abs(rho_i - rho_j) < rho_threshold and abs(theta_i - theta_j) < theta_threshold:
+        if dist_diff(rho_i, rho_j) < rho_threshold and angle_diff(theta_i, theta_j) < theta_threshold:
             line_flags[indices[j]] = False
 
 # filtering
@@ -111,11 +111,11 @@ if np.abs(width_lines[0][1]) < np.abs(height_lines[0][1]):
     width_lines, height_lines = height_lines, width_lines
 
 # 직선 거리 순 정렬 및 거리차 계산
-width_lines = sorted(width_lines, key=lambda l: l[0])
-height_lines = sorted(height_lines, key=lambda l: l[0])
+width_lines = sorted(width_lines, key=lambda l: abs(l[0]))
+height_lines = sorted(height_lines, key=lambda l: abs(l[0]))
 
-width_adj_dists = [width_lines[i][0] - width_lines[i-1][0] for i in range(1, len(width_lines))]
-height_adj_dists = [height_lines[i][0] - height_lines[i-1][0] for i in range(1, len(height_lines))]
+width_adj_dists = [dist_diff(width_lines[i][0], width_lines[i-1][0]) for i in range(1, len(width_lines))]
+height_adj_dists = [dist_diff(height_lines[i][0], height_lines[i-1][0]) for i in range(1, len(height_lines))]
 
 width_adj_dists = sorted(width_adj_dists)
 height_adj_dists = sorted(height_adj_dists)
@@ -128,18 +128,17 @@ letter_width = height_adj_dists[len(height_lines)//2]
 # 빠진 세로줄 찾기
 missing_height_lines = []
 for i in range(1, len(height_lines)):
-    dist = height_lines[i][0] - height_lines[i-1][0]
-    angle_dist = height_lines[i][1] - height_lines[i-1][1]
+    dist = dist_diff(height_lines[i][0], height_lines[i-1][0])
+    angle_dist = angle_diff(height_lines[i][1], height_lines[i-1][1])
     if letter_width * (1-missing_threshold) <= dist <= letter_width * missing_threshold:
         continue
-    found_missing = True
     missing_count = np.round(dist/letter_width)-1
     for j in range(1, 1+int(missing_count)):
         rho = height_lines[i-1][0] + dist*j/(1+missing_count)
         theta = height_lines[i-1][1] + angle_dist*j/(1+missing_count)
         missing_height_lines.append(np.array([rho, theta]))
 height_lines += missing_height_lines
-height_lines = sorted(height_lines, key=lambda l: l[0])
+height_lines = sorted(height_lines, key=lambda l: abs(l[0]))
 
 # 빠진 가로줄 찾기
 missing_width_lines = []
@@ -148,8 +147,8 @@ removal_idx = []
 i = 0
 while i < len(width_lines)-1:
     i += 1
-    dist = width_lines[i][0] - width_lines[i-1][0]
-    angle_dist = width_lines[i][1] - width_lines[i-1][1]
+    dist = dist_diff(width_lines[i][0], width_lines[i-1][0])
+    angle_dist = angle_diff(width_lines[i][1], width_lines[i-1][1])
     expected_line_gap = np.abs(line_height - dist) > np.abs(line_gap - dist)
     dist_combination = line_height + line_gap
     is_combination = np.abs(line_height - dist) >  np.abs(dist_combination - dist)
@@ -181,7 +180,7 @@ while i < len(width_lines)-1:
         is_letter_area = True
 width_lines = [l for i, l in enumerate(width_lines) if i not in removal_idx]
 width_lines += missing_width_lines
-width_lines = sorted(width_lines, key=lambda l: l[0])
+width_lines = sorted(width_lines, key=lambda l: abs(l[0]))
 
 # Cartesian으로 변환
 cartesian_width_lines = []
@@ -288,7 +287,7 @@ for box in boxes:
     box = cv2.cvtColor(box, cv2.COLOR_BGR2GRAY)
     _, box = cv2.threshold(box, 200, 255, cv2.THRESH_BINARY)
     h, w = box.shape
-    box = box[h//15:-h//15, w//15:-w//15]
+    box = box[h//16:-h//16, w//10:-w//10]
     h, w = box.shape
     inner_box = box[h//4:-h//4, w//4:-w//4]
     if np.sum(inner_box < 200) > 0:
