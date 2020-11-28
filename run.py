@@ -4,10 +4,10 @@ import sys
 from pathlib import Path
 
 adjust_size = 500
-rho_threshold = 5
+rho_threshold = 10
 theta_threshold = 35*np.pi/180
 group_threshold = 15*np.pi/180
-missing_threshold = 1.5
+missing_threshold = 1.2
 
 def angle_diff(theta1, theta2):
     return min(abs(theta1 - theta2), abs(theta1+np.pi - theta2), abs(theta1-np.pi - theta2))
@@ -86,8 +86,8 @@ for i in range(len(filtered_lines)):
     for j in range(len(filtered_lines)):
         if i == j:
             continue
-        _, theta_i = filtered_lines[i][0]
-        _, theta_j = filtered_lines[j][0]
+        rho_i, theta_i = filtered_lines[i][0]
+        rho_j, theta_j = filtered_lines[j][0]
         if angle_diff(theta_i, theta_j) < group_threshold:
             similar_lines[i].add(j)
 groupped_lines = set()
@@ -103,10 +103,12 @@ for i, line in enumerate(filtered_lines):
     groups[group_idx].add(i)
     groupped_lines |= groups[group_idx]
 groups.sort(key=len)
-width_groups, height_groups = groups[-2:]
+height_groups, width_groups = groups[-2:]
 
 width_lines = [filtered_lines[i][0] for i in width_groups]
 height_lines = [filtered_lines[i][0] for i in height_groups]
+if np.abs(width_lines[0][1]) < np.abs(height_lines[0][1]):
+    width_lines, height_lines = height_lines, width_lines
 
 # 직선 거리 순 정렬 및 거리차 계산
 width_lines = sorted(width_lines, key=lambda l: l[0])
@@ -118,8 +120,9 @@ height_adj_dists = [height_lines[i][0] - height_lines[i-1][0] for i in range(1, 
 width_adj_dists = sorted(width_adj_dists)
 height_adj_dists = sorted(height_adj_dists)
 
-line_height = width_adj_dists[len(width_adj_dists)//4]
-line_gap = width_adj_dists[(3*len(width_adj_dists))//4]
+line_gap = width_adj_dists[len(width_adj_dists)//6]
+_width_adj_dists_filtered = [e for e in width_adj_dists if e > 1.5*line_gap]
+line_height = _width_adj_dists_filtered[len(_width_adj_dists_filtered)//6]
 letter_width = height_adj_dists[len(height_lines)//2]
 
 # 빠진 세로줄 찾기
@@ -138,6 +141,47 @@ for i in range(1, len(height_lines)):
 height_lines += missing_height_lines
 height_lines = sorted(height_lines, key=lambda l: l[0])
 
+# 빠진 가로줄 찾기
+missing_width_lines = []
+is_letter_area = True
+removal_idx = []
+i = 0
+while i < len(width_lines)-1:
+    i += 1
+    dist = width_lines[i][0] - width_lines[i-1][0]
+    angle_dist = width_lines[i][1] - width_lines[i-1][1]
+    expected_line_gap = np.abs(line_height - dist) > np.abs(line_gap - dist)
+    dist_combination = line_height + line_gap
+    is_combination = np.abs(line_height - dist) >  np.abs(dist_combination - dist)
+    if i == 1 and expected_line_gap:
+        removal_idx.append(0)
+        continue
+    if is_letter_area:
+        if expected_line_gap:
+            removal_idx.append(i-1)
+        elif is_combination:
+            rho = width_lines[i-1][0] + line_height
+            theta = (width_lines[i-1][1] + width_lines[i][1])/2
+            missing_width_lines.append(width_lines[i-1])
+            width_lines[i-1] = np.array([rho, theta])
+            is_letter_area = False
+            i -= 1
+        else:
+            is_letter_area = False
+    else:
+        if is_combination:
+            rho = width_lines[i-1][0] + line_gap
+            theta = (width_lines[i-1][1] + width_lines[i][1])/2
+            missing_width_lines.append(width_lines[i-1])
+            width_lines[i-1] = np.array([rho, theta])
+            i -= 1
+        elif not expected_line_gap:
+            missing_width_lines.append(width_lines[i-1])
+            i -= 1
+        is_letter_area = True
+width_lines = [l for i, l in enumerate(width_lines) if i not in removal_idx]
+width_lines += missing_width_lines
+width_lines = sorted(width_lines, key=lambda l: l[0])
 
 # Cartesian으로 변환
 cartesian_width_lines = []
