@@ -289,7 +289,9 @@ for box in boxes:
     _, box = cv2.threshold(box, 200, 255, cv2.THRESH_BINARY)
     h, w = box.shape
     box = box[h//15:-h//15, w//15:-w//15]
-    if cv2.countNonZero(box) > 0:
+    h, w = box.shape
+    inner_box = box[h//4:-h//4, w//4:-w//4]
+    if np.sum(inner_box < 200) > 0:
         n = str(box_num).zfill(1+np.log10(len(boxes)).astype(int))
         cv2.imwrite(f'output/box-{n}.jpg', box)
         box_num += 1
