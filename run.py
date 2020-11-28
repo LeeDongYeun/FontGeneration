@@ -230,6 +230,11 @@ for i_width in range(0, len(cartesian_width_lines)-1, 2):
         b1, b2 = cartesian_height_lines[i_height+1]
         p4 = seg_intersect(a1, a2, b1, b2)
 
+        rect = order_points(np.array([p1, p2, p3, p4]))
+        tl, _, br, _ = rect
+        boxes.append((tl, br))
+print(boxes)
+'''
         boxes.append(four_point_transform(orig_img, np.array([p1, p2, p3, p4])))
 
 # 박스 이미지 프로세싱 및 저장
@@ -239,7 +244,7 @@ for box in boxes:
     box = cv2.cvtColor(box, cv2.COLOR_BGR2GRAY)
     _, box = cv2.threshold(box, 200, 255, cv2.THRESH_BINARY)
     h, w = box.shape
-    box = box[h//10:-h//10, w//10:-w//10]
+    box = box[h//15:-h//15, w//15:-w//15]
     if cv2.countNonZero(box) > 0:
         n = str(box_num).zfill(1+np.log10(len(boxes)).astype(int))
         cv2.imwrite(f'output/box-{n}.jpg', box)
@@ -264,4 +269,4 @@ for line in height_lines:
     draw(line, (150, 0, 0))
 
 cv2.imwrite('converted.jpg', orig_img)
-
+'''
