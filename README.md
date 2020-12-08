@@ -1,5 +1,3 @@
 ```
-poetry install
-poetry shell
-python ./run.py 1.jpg
+Change the label, model, image file, save file and run the ipynb file in the order
 ```
