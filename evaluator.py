@@ -292,7 +292,15 @@ class Evaluator:
                     ##############################
                     utils.save_tensor_to_image(glyph, path)
                 
-                
+        ##############################
+        # added by dongyeun
+        out = torch.cat(outs)
+        refs = self.get_charimages(fonts, target_chars)
+
+        l1, ssim, msssim = self.get_pixel_losses(out, refs, self.unify_resize_method)
+        print("L1: ", l1.item(), "SSIM: ", ssim.item(), "MSSSIM: ", msssim.item())
+
+        ##############################        
 
         if save_dir:  # do not write grid
             return
