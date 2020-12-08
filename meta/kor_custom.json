@@ -1,3 +1,16 @@
-{"train": {"fonts": ["man_24_undergraduate", "man_25_undergraduate", "man_28_officeWorker"], "chars": []}, 
- "valid": {"fonts": ["man_24_undergraudate"], "chars": []}
+{
+    "train": {
+        "fonts": [
+            "man_22_undergraduate",
+            "man_30_officeWorker2",
+            "woman_26_no",
+            "woman_26_officeWorker",
+            "woman_27_officeWorker3"
+        ],
+        "chars": []
+    }, 
+    "valid": {
+        "fonts": [], 
+        "chars": []
+    }
 }

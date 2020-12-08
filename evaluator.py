@@ -283,7 +283,7 @@ class Evaluator:
                     # added by whie
  
                     #j ref original chars
-                    refs = self.get_charimages(fonts, char)
+                    refs = self.get_charimages([font_name], char)
                     grid = utils.make_comparable_grid(refs, glyph.unsqueeze(0), nrow=2)
 
                     path_compare = save_dir / font_name / "{}_{}_compare.png".format(font_name, uni)
