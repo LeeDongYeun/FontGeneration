@@ -283,7 +283,7 @@ class Evaluator:
                     # added by whie
  
                     #j ref original chars
-                    refs = self.get_charimages(fonts, char)
+                    refs = self.get_charimages([font_name], char)
                     grid = utils.make_comparable_grid(refs, glyph.unsqueeze(0), nrow=2)
 
                     path_compare = save_dir / font_name / "{}_{}_compare.png".format(font_name, uni)
@@ -292,7 +292,15 @@ class Evaluator:
                     ##############################
                     utils.save_tensor_to_image(glyph, path)
                 
-                
+        ##############################
+        # added by dongyeun
+        out = torch.cat(outs)
+        refs = self.get_charimages(fonts, target_chars)
+
+        l1, ssim, msssim = self.get_pixel_losses(out, refs, self.unify_resize_method)
+        print("L1: ", l1.item(), "SSIM: ", ssim.item(), "MSSSIM: ", msssim.item())
+
+        ##############################        
 
         if save_dir:  # do not write grid
             return
