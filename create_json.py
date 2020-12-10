@@ -29,7 +29,7 @@ def main():
         char = codecs.getdecoder('unicode_escape')(char)[0]
         all_chars.append(char)
 
-    tg = random.sample(all_chars, 10)
+    tg = random.sample(all_chars, 15)
     for char in all_chars:
 
         # data['style_chars'] += char

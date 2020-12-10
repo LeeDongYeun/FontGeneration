@@ -89,6 +89,9 @@ class UserFontProcessor(object):
 
     def center_align(self, npimg, fontmaxsize, size=128, margin=0):
 
+        # remove boundaries
+        boundaries = 5
+        npimg = npimg[boundaries:-(boundaries-1),boundaries:-(boundaries-1)]
         w, h = npimg.shape
         wsum = npimg.sum(0)
         hsum = npimg.sum(1)
@@ -99,9 +102,10 @@ class UserFontProcessor(object):
         threshold = 255 * 2
 
         if not npimg.sum():
-            self.logger.warning(
-                '{}, "{}" ({}) is empty (no black)'.format(font, char, self.ord(char))
-            )
+            import ipdb; ipdb.set_trace(context=15)
+            # self.logger.warning(
+            #     '{}, "{}" ({}) is empty (no black)'.format(font, char, self.ord(char))
+            # )
             return False
         wmin = np.arange(w)[wsum>threshold].min()
         wmax = np.arange(w)[wsum>threshold].max()

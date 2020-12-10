@@ -85,7 +85,7 @@ class DynamicMemory(nn.Module):
 
     def read_point(self, style_id, comp_addr, reduction='mean'):
         """ Point read """
-        print(style_id.item(), comp_addr.item())
+        # print(style_id.item(), comp_addr.item())
         comp_feats = self.memory[style_id.item()][comp_addr.item()]
         return self.reduce_features(comp_feats, reduction)
 

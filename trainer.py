@@ -24,6 +24,26 @@ def has_bn(model):
     return False
 
 
+def load_gen_checkpoint(path, gen):
+    print("finetuning the pretrained model")
+    ckpt = torch.load(path)
+    gen.load_state_dict(ckpt['generator_ema'])
+    # g_optim.load_state_dict(ckpt['optimizer'])
+
+    # if disc is not None:
+    #     disc.load_state_dict(ckpt['discriminator'])
+    #     d_optim.load_state_dict(ckpt['d_optimizer'])
+
+    # if aux_clf is not None:
+    #     aux_clf.load_state_dict(ckpt['aux_clf'])
+    #     ac_optim.load_state_dict(ckpt['ac_optimizer'])
+
+    # # NOTE epoch is step
+    # st_epoch = ckpt['epoch'] + 1
+    # loss = ckpt['loss']
+
+
+
 def load_checkpoint(path, gen, disc, aux_clf, g_optim, d_optim, ac_optim):
     ckpt = torch.load(path)
     gen.load_state_dict(ckpt['generator'])

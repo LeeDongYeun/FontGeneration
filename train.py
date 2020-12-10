@@ -23,7 +23,7 @@ from datasets import HDF5Data, get_ma_dataset, get_ma_val_dataset
 import datasets.kor_decompose as kor
 import datasets.thai_decompose as thai
 import utils
-from trainer import Trainer, load_checkpoint
+from trainer import Trainer, load_checkpoint, load_gen_checkpoint
 from evaluator import Evaluator
 
 
@@ -72,6 +72,7 @@ def setup_args_and_config():
     parser.add_argument("config_paths", nargs="+")
     parser.add_argument("--show", action="store_true", default=False)
     parser.add_argument("--resume", default=None)
+    parser.add_argument("--finetune", default=None)
     parser.add_argument("--log_lv", default='info')
     parser.add_argument("--debug", default=False, action="store_true")
     parser.add_argument("--tb-image", default=False, action="store_true",
@@ -315,6 +316,8 @@ def main():
         st_step, loss = load_checkpoint(args.resume, gen, disc, aux_clf, g_optim, d_optim, ac_optim)
         logger.info("Resumed checkpoint from {} (Step {}, Loss {:7.3f})".format(
             args.resume, st_step-1, loss))
+    if args.finetune:
+        load_gen_checkpoint(args.finetune, gen)
 
     ############################
     # setup validation
