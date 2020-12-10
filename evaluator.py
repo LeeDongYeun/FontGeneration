@@ -79,7 +79,7 @@ class Evaluator:
 
         # the number of chars/fonts for CV visualization
         n_chars = 16
-        n_fonts = 16
+        n_fonts = 4
         seen_chars = uniform_sample(meta['train']['chars'], n_chars//2)
         unseen_chars = uniform_sample(meta['valid']['chars'], n_chars//2)
         unseen_fonts = uniform_sample(meta['valid']['fonts'], n_fonts)
