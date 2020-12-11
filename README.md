@@ -48,7 +48,9 @@ python evaluator.py [name] [checkpoint path] [out directory] cfgs/kor_user_test.
 For more information, please refer to [DM-Font](https://github.com/clovaai/dmfont). 
 
 ### Finetune the model with new data
-Since the pretrained model provided by [DM-Font](https://github.com/clovaai/dmfont) is trained on refined handwritings (.ttf files), we found that it does not fit very well into real-world handwriting. Thus, we have tried to finetune the pretrained model with handwriting dataset provided by [AIHub](https://www.aihub.or.kr/ai_data).  
+Since the pretrained model provided by [DM-Font](https://github.com/clovaai/dmfont) is trained on refined handwritings (.ttf files), we found that it does not fit very well into real-world handwriting. Thus, we have tried to finetune the pretrained model with handwriting dataset provided by [AIHub](https://www.aihub.or.kr/ai_data). 
+Here is the [link]() for finetuned model. 
+
 #### Extract common characters shared by the dataset
 It's for extracting shared characters in training dataset. When you use your own dataset to finetune the model, there might be missing characters. 
 In this code, it will extract common characters shared by the dataset.
