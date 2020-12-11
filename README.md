@@ -58,7 +58,11 @@ In this code, it will extract common characters shared by the dataset.
 ```
 python extract_shared_char.py [output name of json file]
 ```
-
+### Example of running a simple font generation with given character images.
+```
+python -m scripts.prepare_user_dataset kor ./data/raw/ocr_results/ meta/kor_custom_ocr.json data/processed/ocr_results/sample_roh_true_0.6
+python evaluator.py aihub checkpoints/korean-handwriting.pth ./ocr_roh_0.6 cfgs/kor_user_test.yaml --mode user-study-save
+```
 
 ## License
 
