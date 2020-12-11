@@ -28,19 +28,20 @@ python create_json.py --img_dir [image directory] --out_name [output name of jso
 ```
 #### Dumping dataset
 
-As in DM-Font, the `scripts/prepare_user_dataset.py` script dumps character images into hdf5 files.
+As in DM-Font, the `scripts/prepare_user_dataset.py` script dumps all of the character images under image directory into hdf5 file.  
 We slightly modified `scripts/prepare_dataset.py` to dump png files into hdf5 files.
-Also please download NanumBarunpenR.ttf and put it into your image directory, since it will be used for content characters.
+Here, you should modify `meta/kor_custom_ocr.json`. Please write your image directory name ont the values of fonts. 
+Also please download NanumBarunpenR.ttf and put it into your image directory and run below command, since it will be used for content characters.
 ```
 # for dumping your own data
-python -m scripts.prepare_user_dataset kor [image directory] [output name of json file] [dump directory]
+python -m scripts.prepare_user_dataset kor [image directory] meta/kor_custom_ocr.json [dump directory]
 # for dumping content font (NanumBarunpenR.ttf)  
 python -m scripts.prepare_dataset kor [NanumBarunpenR.ttf directory] meta/kor_split_content.json [dump directory]
 ```
 
 ### Generation & Pixel-level evaluation
 Now generate new fonts with following command. Note that you should modify `cfs/kor_user_test.yaml`. 
-Please change data_dir, target_json. Also change values of fonts in meta/meta.json with the name of directory which includes your handwriting.
+Please change data_dir, target_json.  
 ```
 python evaluator.py [name] [checkpoint path] [out directory] cfgs/kor_user_test.yaml --mode user-study-save
 ```
