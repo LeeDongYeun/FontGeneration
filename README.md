@@ -45,6 +45,8 @@ Please change data_dir, target_json. Also change values of fonts in meta/meta.js
 python evaluator.py [name] [checkpoint path] [out directory] cfgs/kor_user_test.yaml --mode user-study-save
 ```
 
+For more information, please refer to [DM-Font](https://github.com/clovaai/dmfont). 
+
 ### Finetune the model with new data
 Since the pretrained model provided by [DM-Font](https://github.com/clovaai/dmfont) is trained on refined handwritings (.ttf files), we found that it does not fit very well into real-world handwriting. Thus, we have tried to finetune the pretrained model with handwriting dataset provided by [AIHub](https://www.aihub.or.kr/ai_data).  
 #### Extract common characters shared by the dataset
@@ -53,8 +55,6 @@ In this code, it will extract common characters shared by the dataset.
 ```
 python extract_shared_char.py [output name of json file]
 ```
-
-For more information, please refer to [DM-Font](https://github.com/clovaai/dmfont). 
 
 
 ## License
