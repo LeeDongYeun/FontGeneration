@@ -287,6 +287,9 @@ class Evaluator:
 
                     path_compare = save_dir / font_name / "{}_{}_compare.png".format(font_name, uni)
                     utils.save_tensor_to_image(grid, path_compare)
+                    # save GT
+                    path_GT = save_dir / font_name / "{}_{}_GT.png".format(font_name, uni)
+                    utils.save_tensor_to_image(refs.squeeze(0), path_GT)
                     ##############################
                     utils.save_tensor_to_image(glyph, path)
                 

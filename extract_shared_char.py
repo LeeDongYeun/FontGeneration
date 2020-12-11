@@ -4,6 +4,7 @@ import os
 import json
 from collections import OrderedDict
 import random
+import sys
 
 def main():
     """
@@ -14,7 +15,8 @@ def main():
     """
     
     # prepare output json file
-    out_name = 'meta/kor_split_aihub_subset.json'
+    # out_name = 'meta/kor_split_aihub_subset.json'
+    out_name = sys.argv[1]
     file_data = OrderedDict()
     file_data['train'] = {'fonts':[], 'chars':[]}
     file_data['valid'] = {'fonts':[], 'chars':[]}

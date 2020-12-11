@@ -1,3 +1,3 @@
-{"train": {"fonts": ["sample2"], "chars": []}, 
- "valid": {"fonts": ["sample2"], "chars": []}
+{"train": {"fonts": ["sample_roh_true"], "chars": []}, 
+ "valid": {"fonts": ["sample_roh_true"], "chars": []}
 }
