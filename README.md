@@ -6,9 +6,18 @@ To this end, you should (1) preprocess your images of pre-written handwritings, 
 We have used [DM-Font](https://github.com/clovaai/dmfont) for the font generation.
 
 ## Preprocess your images of handwritings
-- descriptions 
-```
-command
+
+Preprocessing is required before any processing to extract each handwriting letters from the raw image. The implemented preprocessor typically does one of the followings:
+
+- Print coordinates of each boxes respect to the original image
+- Save gray-scaled & flattened image of each boxes
+
+These two operation can be toggled by setting the `save_output` flag. More parameters of the preprocessor can be set in the head of the main file, `preprcessing.py`.
+
+To start the preprocessing step, execute below cammnd with your target image:
+
+```sh
+python ./preprocessing.py {target_img_path}
 ```
 
 ## Get the labels of characters using OCR

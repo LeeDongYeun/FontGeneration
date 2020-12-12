@@ -21,3 +21,6 @@ runs
 fonts
 test_cv/
 test_us/
+
+output/
+converted.jpg
