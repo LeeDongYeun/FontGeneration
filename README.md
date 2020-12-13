@@ -67,6 +67,7 @@ python -m scripts.prepare_dataset kor [NanumBarunpenR.ttf directory] meta/kor_sp
 ```
 
 ### Generation & Pixel-level evaluation
+Before running the code, you should download the pre-trained model in [here](https://drive.google.com/file/d/1T9npQoMTBbsYsiPcGSJtIVgUcjcbrenk/view?usp=sharing).
 Now generate new fonts with following command. Note that you should modify `cfs/kor_user_test.yaml`. 
 Please change data_dir, target_json.  
 ```
@@ -77,7 +78,7 @@ For more information, please refer to [DM-Font](https://github.com/clovaai/dmfon
 
 ### Finetune the model with new data
 Since the pretrained model provided by [DM-Font](https://github.com/clovaai/dmfont) is trained on refined handwritings (.ttf files), we found that it does not fit very well into real-world handwriting. Thus, we have tried to finetune the pretrained model with handwriting dataset provided by [AIHub](https://www.aihub.or.kr/ai_data). 
-Here is the [link]() for finetuned model. 
+Here is the [link](https://drive.google.com/file/d/1R6qKx9KIJaHLreCIrNWFtgR8f_MQ-KQp/view?usp=sharing) for finetuned model. 
 
 #### Extract common characters shared by the dataset
 It's for extracting shared characters in training dataset. When you use your own dataset to finetune the model, there might be missing characters. 
@@ -88,5 +89,8 @@ python extract_shared_char.py [output name of json file]
 ### Example of running a simple font generation with given character images.
 ```
 python -m scripts.prepare_user_dataset kor ./data/raw/ocr_results/ meta/kor_custom_ocr.json data/processed/ocr_results/sample_roh_true_0.6
-python evaluator.py aihub checkpoints/korean-handwriting.pth ./ocr_roh_0.6 cfgs/kor_user_test.yaml --mode user-study-save
+# if you want to inference with the pre-trained model
+python evaluator.py test checkpoints/korean-handwriting.pth ./ocr_roh_0.6 cfgs/kor_user_test.yaml --mode user-study-save
+# if you want to inference with the finetuned model
+python evaluator.py test_finetuned checkpoints/150000-aihub_boundary_load_gen.pth ./ocr_roh_0.6 cfgs/kor_user_test.yaml --mode user-study-save
 ```
