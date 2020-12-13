@@ -33,6 +33,7 @@ model_generation : Folder to train a new model using the IBM model generation
 
 ### Test the pre-trained and trained model
 test_model.ipynb : Tests the new models(links attached in the file). Similar process with the AI_tagging file
+individual_image/all_test_h : As the preprocessing was developed simultaneously, we used manually boxed images for testing models.
 
 ### Label the input images into character unicodes.
 AI_tagging.ipynb : File for labeling files from boxed images.
