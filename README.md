@@ -25,17 +25,19 @@ python ./preprocessing.py {target_img_path}
 By using the files in /Ocr you can generate datasets, train models, check accuracy and label the images.
 All models that we used(both pre-trained and trained models) are attached in the ipynb files(pre-trained -> AI_tagging, trained -> test_model)
 
-### AI_tagging.ipynb 
-File for labeling files from boxed images.
+### Model training
+fonts directory : The 40 ttf fonts that we used to generate a new model
+model_generation : Folder to train a new model using the IBM model generation
+- model_generation.ipynb : The main colab note that generates a model from the fonts, other python files are used in this note so change the paths in the ipynb file for your own drive(also uses the label file in the ocr_github folder).
+- other files in the folder are for the model-generation process(they are needed in model_generation.ipynb. More instructions in the ipynb file)
+
+### Test the pre-trained and trained model
+test_model.ipynb : Tests the new models(links attached in the file). Similar process with the AI_tagging file
+
+### Label the input images into character unicodes.
+AI_tagging.ipynb : File for labeling files from boxed images.
 - needs the label file(in the ocr_github folder) and a korean character boxed image folder as the input.
 - returns unicode labeled files as an output (more specific instructions in the file)
-### model_generation 
-Folder to train a new model using the IBM model generation
-### fonts directory 
-The 40 ttf fonts that we used to generate a new model
-### model_generation.ipynb 
-the main colab note that generates a model from the fonts, other python files are used in this note so change the paths in the ipynb file for your own drive(also uses the label file in the ocr_github folder).
-### test_model.ipynb : Tests the new models(links attached in the file). Similar process with the AI_tagging file
 
 Change the label, model, image file, save folder and run the ipynb file in the order
 The label file is in the folder and the pre-trained model can be downloaded in the ipynb file
